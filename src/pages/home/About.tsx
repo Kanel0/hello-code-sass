@@ -37,7 +37,7 @@ const AboutUs = () => {
           <p className="text-gray-500 mt-2">
             Image from <a href="https://www.freepik.com" className="text-blue-600">Freepik</a>
           </p>
-          <button className="mt-6 px-6 py-2 border border-gray-800 font-[Klapt] text-gray-800 hover:bg-orange-500 hover:text-white transition">
+          <button className="mt-6 px-6 py-2 border border-gray-800 font-[Klapt] text-gray-800 hover:bg-gray-800 rounded hover:text-white transition">
             Book a Call
           </button>
         </div>
