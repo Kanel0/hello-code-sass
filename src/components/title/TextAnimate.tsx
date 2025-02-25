@@ -97,7 +97,6 @@ const BlurText: React.FC<BlurTextProps> = ({
   {springs.map((props, index) => (
   <animated.span
     key={`${elements[index]}-${index}`}
-    style={props as unknown as React.CSSProperties}
     className="inline-block will-change-[transform,filter,opacity]"
   >
     {elements[index] === ' ' ? '\u00A0' : elements[index]}
