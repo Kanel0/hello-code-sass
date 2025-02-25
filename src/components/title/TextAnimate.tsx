@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { EasingFunction } from '@react-spring/types';
-import { SpringValue, useSprings, animated, AnimatedProps } from '@react-spring/web';
+import { SpringValue, animated, useSprings, AnimatedProps } from '@react-spring/web';
 
 interface AnimatedStyle {
   filter: SpringValue<string>;
@@ -97,7 +97,7 @@ const BlurText: React.FC<BlurTextProps> = ({
   {springs.map((props, index) => (
   <animated.span
     key={`${elements[index]}-${index}`}
-    style={props as AnimatedProps<AnimatedStyle>} 
+    style={props as AnimatedProps<AnimatedStyle>}
     className="inline-block will-change-[transform,filter,opacity]"
   >
     {elements[index] === ' ' ? '\u00A0' : elements[index]}
