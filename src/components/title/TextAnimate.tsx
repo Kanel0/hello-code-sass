@@ -83,6 +83,7 @@ const BlurText: React.FC<BlurTextProps> = ({
       },
     }))
   );
+  
 
   return (
     <p ref={ref} className={`blur-text ${className} inline-flex flex-wrap`}>
