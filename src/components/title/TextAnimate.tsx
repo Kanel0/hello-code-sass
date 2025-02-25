@@ -54,25 +54,25 @@ const BlurText: React.FC<BlurTextProps> = ({
   ];
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
+    if (typeof window !== 'undefined') {
+      const observer = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) {
           setInView(true);
           if (ref.current) observer.unobserve(ref.current);
         }
-      },
-      { threshold, rootMargin }
-    );
-
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+      }, { threshold, rootMargin });
+  
+      if (ref.current) observer.observe(ref.current);
+      return () => observer.disconnect();
+    }
   }, [threshold, rootMargin]);
+  
 
   const springs = useSprings(
     elements.length,
     elements.map((_, i) => ({
       from: animationFrom ?? defaultFrom,
-      to: inView ? animationTo ?? defaultTo : animationFrom ?? defaultFrom,
+      to: inView ? (animationTo ?? defaultTo) : (animationFrom ?? defaultFrom),
       delay: i * delay,
       config: { easing },
       onRest: () => {
@@ -84,19 +84,21 @@ const BlurText: React.FC<BlurTextProps> = ({
     }))
   );
   
+  
 
   return (
     <p ref={ref} className={`blur-text ${className} inline-flex flex-wrap`}>
       {springs.map((props, index) => (
-        <animated.span
-          key={index}
-          style={props}
-          className="inline-block  will-change-[transform,filter,opacity]"
-        >
-          {elements[index] === ' ' ? '\u00A0' : elements[index]}
-          {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
-        </animated.span>
-      ))}
+  <animated.span
+    key={`${elements[index]}-${index}`}
+    style={props}
+    className="inline-block will-change-[transform,filter,opacity]"
+  >
+    {elements[index] === ' ' ? '\u00A0' : elements[index]}
+    {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
+  </animated.span>
+))}
+
     </p>
   );
 };
