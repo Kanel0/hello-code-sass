@@ -14,6 +14,8 @@ function Register() {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [userName , setUserName] = useState('');
+  const [email , setEmail] = useState('');
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -41,7 +43,7 @@ function Register() {
 
 
   // Add the data to the database
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!termsAccepted) {
       console.log("Vous devez accepter les conditions d'utilisation !");
@@ -58,7 +60,30 @@ function Register() {
       return;
     }
 
-      console.log("Compte créé avec succès !")
+     
+    // Envoi des données au backend via l'API
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: userName,  
+          email: email, 
+          password : password,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Compte créé avec succès !");
+      } else {
+        console.error(data.message);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la création du compte :", error);
+    }
   };
 
   return (
@@ -74,13 +99,19 @@ function Register() {
           {/* Username Input */}
           <div className='mb-2'>
             <p className='text-gray-500 mb-1'>Name or Username</p>
-            <Input type='text' placeholder='Enter your name or username' required />
+            <Input type='text' placeholder='Enter your name or username'
+            value={userName}
+            onChange={(e)=> setUserName(e.target.value)}
+            required />
           </div>
 
           {/* Email Input */}
           <div className='mb-2'>
             <p className='text-gray-500 mb-1'>Email</p>
-            <Input type='email' placeholder='Enter your email' required />
+            <Input type='email' placeholder='Enter your email' required 
+            value={email}
+            onChange={(e)=> setEmail(e.target.value)}
+            />
           </div>
 
           {/* Password Input */}
@@ -147,3 +178,4 @@ function Register() {
 }
 
 export default Register;
+
