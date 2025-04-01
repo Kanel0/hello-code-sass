@@ -1,12 +1,18 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 
-const prisma = new PrismaClient();
-const logFilePath = path.join(process.cwd(), 'logs/app.log');
+interface User {
+  id: number;
+  email: string;
+  password: string;
+}
+
+// Définir le chemin du fichier JSON contenant les utilisateurs
+const usersFilePath = path.join(process.cwd(), 'src/models/user/user.json');  
+const logFilePath = path.join(process.cwd(), 'src/logs/app.log');  
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey'; 
 
 // Fonction pour écrire dans les logs
@@ -17,6 +23,25 @@ const writeLog = (message: string) => {
     if (err) {
       console.error('Error writing log:', err);
     }
+  });
+};
+
+
+
+// Fonction pour lire le fichier JSON des utilisateurs
+const readUsersFromFile = (): Promise<User[]> => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(usersFilePath, 'utf8', (err, data) => {
+      if (err) {
+        return reject('Error reading users file');
+      }
+      try {
+        const users = JSON.parse(data);
+        resolve(users);
+      } catch (error) {
+        reject(`Error parsing users file : ${error}`);
+      }
+    });
   });
 };
 
@@ -31,10 +56,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-      // Recherche de l'utilisateur dans la base
-      const user = await prisma.user_admin.findUnique({
-        where: { email },
-      });
+      // Lire les utilisateurs depuis le fichier JSON
+      const users = await readUsersFromFile();
+
+      // Recherche de l'utilisateur dans la liste
+      const user = users.find((user) => user.email === email);
 
       if (!user) {
         writeLog(`Login failed: User not found (${email})`);

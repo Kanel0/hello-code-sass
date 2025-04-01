@@ -1,11 +1,13 @@
 "use client";
 import Checkbox, { ButtonPrimary } from '@/components/common/Button';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '@/assets/Logo.png';
 import Input from '@/components/input/Input';
 import Image from 'next/image';
+import { API } from '@/constant/URL';
+import Modal from '@/components/modals/Modal';
 
 function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -40,57 +42,98 @@ function Register() {
     setConfirmPasswordError(newConfirmPassword !== password ? 'Les mots de passe ne correspondent pas.' : '');
   };
 
-
+  const navigate = useNavigate();
 
   // Add the data to the database
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!termsAccepted) {
-      console.log("Vous devez accepter les conditions d'utilisation !");
+      setModalMessage("Vous devez accepter les conditions d'utilisation !");
+      setIsErrorModalOpen(true);
       return;
     }
 
     if (!validatePassword(password)) {
-      console.log("Le mot de passe n'est pas valide !")
+      setModalMessage("Le mot de passe n'est pas valide !");
+      setIsErrorModalOpen(true);
       return;
     }
     if (password !== confirmPassword) {
-
-      console.log("Les mots de passe ne correspondent pas !")
+      setModalMessage("Les mots de passe ne correspondent pas !");
+      setIsErrorModalOpen(true);
       return;
     }
 
      
-    // Envoi des données au backend via l'API
+    const response = await fetch(`${API}/api/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: userName,
+        email: email,
+        password: password,
+      }),
+    });
+    
+    const responseText = await response.text();
+    console.log('Réponse brute:', responseText);
+    
     try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: userName,  
-          email: email, 
-          password : password,
-        }),
-      });
-
-      const data = await response.json();
+      const data = JSON.parse(responseText); 
       if (response.ok) {
-        console.log("Compte créé avec succès !");
+        setModalMessage("Compte créé avec succès !");
+        setIsSuccessModalOpen(true);
+        navigate('/create-database')
+        
+
+
       } else {
-        console.error(data.message);
+        setModalMessage(data.message || "Une erreur est survenue !");
+        setIsErrorModalOpen(true);
       }
     } catch (error) {
-      console.error("Erreur lors de la création du compte :", error);
+      setModalMessage("Erreur lors de la connexion au serveur !");
+      setIsErrorModalOpen(true);
+      console.error("Erreur de parsing JSON:", error);
     }
+    
   };
 
+// États pour gérer les modals
+const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+const [modalMessage, setModalMessage] = useState('');
+
+useEffect(() => {
+  if (!isSuccessModalOpen) {
+    setPassword('');
+    setConfirmPassword('');
+    setEmail('');
+    setUserName('');
+    setTermsAccepted(false);
+  }
+}, [isSuccessModalOpen]);
   return (
     <>
+    {/* ✅ MODAL SUCCESS */}
+    <Modal isOpen={isSuccessModalOpen} onClose={() => setIsSuccessModalOpen(false)} title="Succès">
+        <p>{modalMessage}</p>
+      </Modal>
+
+      {/* ❌ MODAL ERROR */}
+      <Modal isOpen={isErrorModalOpen} onClose={() => setIsErrorModalOpen(false)} title="Erreur">
+        <p>{modalMessage}</p>
+      </Modal>
       {/* Toast Container (Obligatoire pour react-hot-toast) */}
       <div className='flex justify-center bg-gray-100 min-h-screen w-full items-center'>
-        <form onSubmit={handleSubmit} className='bg-white p-4 sm:p-6 rounded-lg shadow-2xl w-full max-w-md mx-auto'>
+      <form 
+          key={isSuccessModalOpen ? "reset-form" : "form"} 
+          onSubmit={handleSubmit} 
+          className='bg-white p-4 sm:p-6 rounded-lg shadow-2xl w-full max-w-md mx-auto'
+        >
+
           {/* Logo */}
           <div className='flex justify-center mb-6 bg-gray-800 h-40 rounded shadow-xl'>
             <Image src={Logo} alt="Loto ERP" className='max-w-[200px] w-full' />
