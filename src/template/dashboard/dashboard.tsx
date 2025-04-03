@@ -12,7 +12,7 @@ interface User {
   username: string;
   email: string;
 }
-function Dashbord() {
+function DashbordClient() {
 
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -252,4 +252,4 @@ const menuItems = [
   );
 }
 
-export default Dashbord;
+export default DashbordClient;

@@ -21,13 +21,13 @@ function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     // Validation simple des champs
     if (!email || !password) {
       setModalMessage('Please enter both email and password');
       return;
     }
-
+  
     try {
       const response = await fetch('/api/login', { 
         method: 'POST',
@@ -37,15 +37,16 @@ function LoginPage() {
         body: JSON.stringify({ email, password }),
         credentials: 'include',
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         // Enregistrer le token JWT dans le localStorage
-          localStorage.setItem('token', data.token);
-        // localStorage.setItem('user', JSON.stringify({ username: data.username, email: data.email }))
-        // Rediriger l'utilisateur vers la page d'accueil ou tableau de bord
+        localStorage.setItem('tokenadmin', data.token);
+        // Rediriger l'utilisateur vers le dashboard
         navigate('/dashboard');
+      } else if (response.status === 401) { 
+        setModalMessage('Unauthorized: Invalid email or password'); // Message spécifique pour 401
       } else {
         setModalMessage(data.message || 'Login failed');
       }
@@ -54,8 +55,7 @@ function LoginPage() {
       setModalMessage('An error occurred while logging in');
     }
   };
-
-  
+    
   // États pour gérer les modals
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
