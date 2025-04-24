@@ -12,6 +12,7 @@ import "../../components/fonts/font.css"
 interface User {
   username: string;
   email: string;
+  profile : string
 }
 
 interface DashboardProps {
@@ -142,6 +143,7 @@ function Dashbord ({ children , currentPath }: DashboardProps) {
  }, [users]); // Dependency on `users` array
  
  
+
  
  useEffect(() => {
    if (user?.email) {
@@ -207,7 +209,14 @@ function Dashbord ({ children , currentPath }: DashboardProps) {
            <div className='relative'>
                {/* Avatar avec initiales */}
                <div className='w-12 h-12 rounded-full bg-violet-500 flex items-center justify-center'>
-               <Image src={Avatar} alt="User Avatar" className='rounded-full w-12 h-12 object-cover' />
+               <Image
+  src={filteredUsers[0]?.profile || Avatar}
+  alt="User Avatar"
+  className="rounded-full w-12 h-12 object-cover"
+  width={48}
+  height={48}
+  unoptimized 
+/>
                </div>
                
                {/* Indicateur de statut en ligne */}
@@ -221,12 +230,19 @@ function Dashbord ({ children , currentPath }: DashboardProps) {
         </div>
         {/* Menu déroulant */}
         {isOpen && (
-              <div ref={menuRef}  className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-2 z-50 m-2 ">
+              <div ref={menuRef}  className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-lg py-2 z-50 m-2 ">
                 {/* En-tête du menu */}
                 <div className="px-4 py-3 border-b border-gray-100">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-violet-500 flex items-center justify-center">
-                    <Image src={Avatar} alt="User Avatar" className='rounded-full w-12 h-12 object-cover' />
+                    <div className="w-12 h-12 rounded-full bg-violet-500 flex items-center justify-center">
+                                        <Image
+                      src={filteredUsers[0]?.profile || Avatar}
+                      alt="User Avatar"
+                      className="rounded-full w-12 h-12 object-cover"
+                      width={48}
+                      height={48}
+                      unoptimized 
+                    />
                     </div>
                     <div className="flex flex-col ">
                     <span className="text-sm font-medium">{filteredUsers[0]?.username || "Utilisateur"}</span>
@@ -242,7 +258,7 @@ function Dashbord ({ children , currentPath }: DashboardProps) {
                     <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    Mon compte
+                    Profile
                   </a>
                   
                   
@@ -251,7 +267,7 @@ function Dashbord ({ children , currentPath }: DashboardProps) {
                   <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                  Se déconnecter
+                  Log out
                 </button>
         
                 </div>

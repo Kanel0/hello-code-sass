@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Dashboard from "./dashboard";
-import Input from "@/components/input/Input";
-import { ButtonPrimary } from "@/components/common/Button";
 
 function Contact() {
   const location = useLocation();
@@ -42,19 +40,31 @@ function Contact() {
 
         {/* Input et bouton envoyer */}
         <div className="mt-4 flex">
-          <Input
+          <input
             type="text"
-            className="flex-1 w-[900px] rounded-l-lg"
-            placeholder="Écrivez un message..."
+            className="
+          flex-1 
+          w-[900px] 
+          px-4 
+          rounded-l-lg         
+          border 
+          border-[#7367f0]           
+          outline-none 
+          transition-all
+          duration-300 
+          focus:shadow-md
+            
+            "
+            placeholder="Write a message..."
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
           />
-          <ButtonPrimary
-            className=" text-white  w-[200px] px-4 py-2 rounded-r-lg"
+          <button
+            className="bg-gray-800 font-[Klapt] font-bold text-white  w-[200px] px-4 py-2 rounded-r-lg"
             onClick={handleSendMessage}
           >
             Send
-          </ButtonPrimary>
+          </button>
         </div>
       </div>
     </Dashboard>

@@ -23,19 +23,25 @@ const readUsers = () => {
   return JSON.parse(fs.readFileSync(usersFilePath, 'utf8'));
 };
 
-// Fonction pour copier les données de l'utilisateur dans database/{userID}/user.json
 const copyUserData = (user: User) => {
-  const userDir = path.join(databaseDir, user.id);
-  const userFile = path.join(userDir, 'user.json');
+  const userTargetPath = path.join(
+    databaseDir,
+    user.id,
+    'template',
+    'models',
+    'users'
+  );
+  const userFile = path.join(userTargetPath, 'user.json');
 
-  // Vérifier si le dossier de l'utilisateur existe, sinon le créer
-  if (!fs.existsSync(userDir)) {
-    fs.mkdirSync(userDir, { recursive: true });
+  // Créer les dossiers s'ils n'existent pas
+  if (!fs.existsSync(userTargetPath)) {
+    fs.mkdirSync(userTargetPath, { recursive: true });
   }
 
-  // Copier les données de l'utilisateur dans user.json
+  // Copier les données de l'utilisateur dans le nouveau chemin
   fs.writeFileSync(userFile, JSON.stringify(user, null, 2), 'utf8');
 };
+
 
 // Fonction pour récupérer les bases de données d'un utilisateur
 const getUserDatabases = (userID: string) => {
@@ -109,6 +115,70 @@ const copyTemplate = (userID: string) => {
     writeLog(`Template copié dans la base de données : ${targetDir}`);
   };
   
+  const generateRoutesFile = (userID: string, databaseName: string) => {
+    const routesDir = path.join(databaseDir, userID, 'template', 'routes');
+    const routesFile = path.join(routesDir, 'Routes.tsx');
+  
+    const routesContent = `"use client";
+  import { BrowserRouter as Router , Route , Routes } from 'react-router-dom';
+  import ErrorPage from '../error/ErrorPage';
+  import LoginPage from '../login/LoginPage';
+  
+  function RouteContent() {
+      return (
+          <>
+          <Router>
+           <Routes>
+             {/* Template Route  */}
+             <Route path='/${databaseName}/login' element={<LoginPage/>}></Route>
+  
+             {/* Error page */}
+             <Route path='*' element={<ErrorPage/>}></Route>
+           </Routes>
+          </Router>
+          </>
+         );
+       }
+  
+  export default RouteContent;
+  `;
+  
+    if (!fs.existsSync(routesDir)) {
+      fs.mkdirSync(routesDir, { recursive: true });
+    }
+  
+    fs.writeFileSync(routesFile, routesContent, 'utf8');
+    writeLog(`Fichier Routes.tsx généré dans : ${routesFile}`);
+  };
+  
+
+  // Fonction pour mettre à jour le fichier Routes.tsx dans le dossier src/routes
+  // const updateAppRoutesFile = (userID: string) => {
+  //   const userRoutesFile = path.join(
+  //     databaseDir,
+  //     userID,
+  //     'template',
+  //     'routes',
+  //     'Routes.tsx'
+  //   );
+  
+  //   const appRoutesFile = path.join(
+  //     process.cwd(),
+  //     'src',
+  //     'routes',
+  //     'Routes.tsx'
+  //   );
+  
+  //   if (!fs.existsSync(userRoutesFile)) {
+  //     writeLog(`Fichier Routes.tsx non trouvé pour ${userID}`);
+  //     return;
+  //   }
+  
+  //   fs.copyFileSync(userRoutesFile, appRoutesFile);
+  //   writeLog(`Fichier Routes.tsx mis à jour pour l'utilisateur ${userID}`);
+  // };
+  
+
 // Handler pour l'API
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
@@ -168,6 +238,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // Copier le template dans la base créée
       copyTemplate(user.id);
+
+
+      // Générer le fichier Routes.tsx avec la bonne route
+      generateRoutesFile(user.id, database);
+
+
+      // updateAppRoutesFile(user.id);
 
       writeLog(`Base de données créée: ${database} pour ${username}`);
       return res.status(201).json({

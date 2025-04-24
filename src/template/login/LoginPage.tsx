@@ -1,5 +1,5 @@
 "use client";
-import Checkbox, { ButtonPrimary } from '@/components/common/Button';
+import { ButtonPrimary } from '@/components/common/Button';
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
@@ -95,9 +95,7 @@ function LoginPage() {
           <div className='mb-6'>
             <div className='flex flex-wrap justify-between mb-1'>
               <p className='text-gray-500'>Password</p>
-              <Link to="/forgot-password" className='text-[#7367f0] text-sm hover:underline'>
-                Forgot password?
-              </Link> 
+              
             </div>
             <Input
               type={showPassword ? 'text' : 'password'}
@@ -120,13 +118,6 @@ function LoginPage() {
           </div>
 
           {/* Remember Me Checkbox */}
-          <div className='mb-6'>
-            <Checkbox
-              label="Remember me"
-              checked
-              onChange={() => {}}
-            />
-          </div>
 
           {/* Login Button */}
           <div className='mb-6'>

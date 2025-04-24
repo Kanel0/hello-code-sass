@@ -7,8 +7,10 @@ import Input from '@/components/input/Input';
 import Image from 'next/image';
 import { API } from '@/constant/URL';
 import Modal from '@/components/modals/Modal';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 function CreateDatabase() {
+
+    const navigate = useNavigate();
     // États pour gérer les modals
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -45,7 +47,10 @@ function CreateDatabase() {
             setIsSuccessModalOpen(true);
                        
            
-    
+            // ✅ Redirection vers /{database}/login
+            setTimeout(() => {
+              navigate(`/${database}/login`);
+            }, 1500);
     
           } else {
             setModalMessage(data.message || "Une erreur est survenue !");

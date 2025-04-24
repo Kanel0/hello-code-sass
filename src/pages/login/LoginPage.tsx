@@ -1,5 +1,5 @@
 "use client";
-import Checkbox, { ButtonPrimary } from '@/components/common/Button';
+import  { ButtonPrimary } from '@/components/common/Button';
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
@@ -7,13 +7,18 @@ import Logo from '@/assets/Logo.png';
 import Input from '@/components/input/Input';
 import Image from 'next/image';
 import Modal from '@/components/modals/Modal';
-
+import Loading from '@/app/Loading';
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  // États pour gérer les modals
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -28,6 +33,8 @@ function LoginPage() {
       return;
     }
   
+    setIsLoading(true);
+
     try {
       const response = await fetch('/api/login', { 
         method: 'POST',
@@ -56,11 +63,13 @@ function LoginPage() {
     }
   };
     
-  // États pour gérer les modals
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
+   // 👉 Afficher le spinner pendant le chargement
+   if (isLoading) {
+    return <Loading />;
+  }
 
+
+  
   return (
     <>
         {/* ✅ MODAL SUCCESS */}
@@ -120,13 +129,13 @@ function LoginPage() {
           </div>
 
           {/* Remember Me Checkbox */}
-          <div className='mb-6'>
+          {/* <div className='mb-6'>
             <Checkbox
               label="Remember me"
               checked
               onChange={() => {}}
             />
-          </div>
+          </div> */}
 
           {/* Login Button */}
           <div className='mb-6'>

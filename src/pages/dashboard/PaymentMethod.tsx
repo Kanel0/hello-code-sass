@@ -3,32 +3,31 @@
 import { useState } from "react";
 
 import Dashboard from "./dashboard";
-import { loadStripe } from "@stripe/stripe-js";
+
 import { useLocation } from "react-router-dom";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
 export default function PaymentMethod() {
   const location = useLocation();
   const [selectedMethod, setSelectedMethod] = useState("stripe");
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
-  const handlePayment = async () => {
-    setLoading(true);
+  // const handlePayment = async () => {
+  //   setLoading(true);
 
-    if (selectedMethod === "stripe") {
-      const stripe = await stripePromise;
-      if (!stripe) return;
+  //   if (selectedMethod === "stripe") {
 
-      const response = await fetch("/api/checkout", { method: "POST" });
-      const { sessionId } = await response.json();
-      await stripe.redirectToCheckout({ sessionId });
-    } else {
-      alert("Autres méthodes bientôt disponibles !");
-    }
+  //     if (!stripe) return;
 
-    setLoading(false);
-  };
+  //     const response = await fetch("/api/checkout", { method: "POST" });
+  //     const { sessionId } = await response.json();
+  //     await stripe.redirectToCheckout({ sessionId });
+  //   } else {
+  //     alert("Autres méthodes bientôt disponibles !");
+  //   }
+
+  //   setLoading(false);
+  // };
 
   return (
     <Dashboard currentPath={location.pathname}>
@@ -63,7 +62,7 @@ export default function PaymentMethod() {
           </div>
 
           <button
-            onClick={handlePayment}
+
             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
             disabled={loading}
           >
