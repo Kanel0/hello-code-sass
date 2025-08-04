@@ -9,7 +9,7 @@ import { API } from '@/constant/URL';
 import Modal from '@/components/modals/Modal';
 import {  useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-function CreateDatabase() {
+function CreateDatabaseTemplate() {
 
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
@@ -200,4 +200,4 @@ function CreateDatabase() {
         </>
       );
     }
-export default CreateDatabase
+export default CreateDatabaseTemplate

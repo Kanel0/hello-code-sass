@@ -9,7 +9,7 @@ import Image from 'next/image';
 import Modal from '@/components/modals/Modal';
 
 
-function LoginPage() {
+function LoginPageTemplate() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,12 +29,12 @@ function LoginPage() {
     }
 
     try {
-      const response = await fetch('/api/login', { 
+      const response = await fetch('/template/api/login', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password }),  
         credentials: 'include',
       });
 
@@ -141,4 +141,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default LoginPageTemplate;

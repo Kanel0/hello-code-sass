@@ -5,16 +5,17 @@ import Title from '@/components/title/Title';
 import { FcLock } from 'react-icons/fc';
 import Input from '@/components/input/Input';
 import { ButtonPrimary } from '@/components/common/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 
 function ForgotPassword() {
+  const navigate = useNavigate()
   return (
     <>
       <div className="flex justify-center bg-gray-100 min-h-screen w-full items-center px-4 py-6 sm:py-8">
         <div className="bg-white p-4 sm:p-8 rounded-lg shadow-2xl w-full max-w-md mx-auto">
           {/* Logo */}
-          <div className="flex justify-center mb-6 bg-gray-800 rounded shadow-xl">
+          <div onClick={()=> navigate('/')} className="flex cursor-pointer justify-center mb-6 bg-gray-800 rounded shadow-xl">
             <Image src={Logo} alt="Loto ERP Logo" className="max-w-[200px] w-full" />
           </div>
 

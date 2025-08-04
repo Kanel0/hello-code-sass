@@ -9,7 +9,8 @@ import Image from 'next/image';
 import { API } from '@/constant/URL';
 import Modal from '@/components/modals/Modal';
 
-function Register() {
+
+function RegisterTemplate() {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -65,7 +66,7 @@ function Register() {
     }
 
      
-    const response = await fetch(`${API}/api/register`, {
+    const response = await fetch(`${API}/template/api/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -220,5 +221,5 @@ useEffect(() => {
   );
 }
 
-export default Register;
+export default RegisterTemplate;
 

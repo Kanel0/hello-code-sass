@@ -7,7 +7,6 @@ import Logo from '@/assets/Logo.png';
 import Input from '@/components/input/Input';
 import Image from 'next/image';
 import Modal from '@/components/modals/Modal';
-import Loading from '@/app/Loading';
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -63,11 +62,6 @@ function LoginPage() {
     }
   };
     
-   // 👉 Afficher le spinner pendant le chargement
-   if (isLoading) {
-    return <Loading />;
-  }
-
 
   
   return (
@@ -84,7 +78,7 @@ function LoginPage() {
       <div className='flex justify-center bg-gray-100 min-h-screen w-full items-center px-4 py-8'>
         <div className='bg-white p-4 sm:p-8 rounded-lg shadow-2xl w-full max-w-md mx-auto'>
           {/* Logo */}
-          <div className='flex justify-center mb-6 bg-gray-800 rounded shadow-xl'>
+          <div onClick={()=> navigate('/')} className='flex cursor-pointer justify-center mb-6 bg-gray-800 rounded shadow-xl'>
             <Image src={Logo} alt="Loto ERP" className='max-w-[200px] w-full' />
           </div>
           <form onSubmit={handleLogin}>
