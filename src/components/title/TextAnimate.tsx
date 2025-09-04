@@ -22,6 +22,10 @@ interface BlurTextProps {
   onAnimationComplete?: () => void;
 }
 
+// ✅ Forcer un composant correctement typé qui accepte bien `children`
+type AnimatedSpanProps = React.HTMLAttributes<HTMLSpanElement> & { style?: any };
+const AnimatedSpan = animated.span as unknown as React.FC<AnimatedSpanProps>;
+
 const BlurText: React.FC<BlurTextProps> = ({
   text = '',
   delay = 200,
@@ -40,9 +44,10 @@ const BlurText: React.FC<BlurTextProps> = ({
   const ref = useRef<HTMLParagraphElement>(null);
   const completions = useRef(elements.map(() => false));
 
-  const defaultFrom: AnimationStep = direction === 'top'
-    ? { filter: 'blur(10px)', opacity: 0, transform: 'translate3d(0,-50px,0)' }
-    : { filter: 'blur(10px)', opacity: 0, transform: 'translate3d(0,50px,0)' };
+  const defaultFrom: AnimationStep =
+    direction === 'top'
+      ? { filter: 'blur(10px)', opacity: 0, transform: 'translate3d(0,-50px,0)' }
+      : { filter: 'blur(10px)', opacity: 0, transform: 'translate3d(0,50px,0)' };
 
   const defaultTo: AnimationStep[] = [
     {
@@ -55,18 +60,19 @@ const BlurText: React.FC<BlurTextProps> = ({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const observer = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          if (ref.current) observer.unobserve(ref.current);
-        }
-      }, { threshold, rootMargin });
-  
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setInView(true);
+            if (ref.current) observer.unobserve(ref.current);
+          }
+        },
+        { threshold, rootMargin }
+      );
       if (ref.current) observer.observe(ref.current);
       return () => observer.disconnect();
     }
   }, [threshold, rootMargin]);
-  
 
   const springs = useSprings(
     elements.length,
@@ -83,22 +89,19 @@ const BlurText: React.FC<BlurTextProps> = ({
       },
     }))
   );
-  
-  
 
   return (
     <p ref={ref} className={`blur-text ${className} inline-flex flex-wrap`}>
-  {springs.map((props, index) => (
-  <animated.span
-    key={`${elements[index]}-${index}`}
-    style={props}
-    className="inline-block will-change-[transform,filter,opacity]"
-  >
-    {elements[index] === ' ' ? '\u00A0' : elements[index]}
-    {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
-  </animated.span>
-))}
-
+      {springs.map((styleProps, index) => (
+        <AnimatedSpan
+          key={`${elements[index]}-${index}`}
+          style={styleProps as any} // <- typé large via AnimatedSpanProps
+          className="inline-block will-change-[transform,filter,opacity]"
+        >
+          {elements[index] === ' ' ? '\u00A0' : elements[index]}
+          {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
+        </AnimatedSpan>
+      ))}
     </p>
   );
 };
