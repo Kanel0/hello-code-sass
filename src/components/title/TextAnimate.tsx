@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
-import { EasingFunction } from '@react-spring/types';
-import { animated, useSprings } from '@react-spring/web';
+import { animated, useSprings, SpringValue } from '@react-spring/web';
+import { CSSProperties } from 'react';
 
 interface AnimationStep {
   filter: string;
@@ -18,13 +18,24 @@ interface BlurTextProps {
   rootMargin?: string;
   animationFrom?: AnimationStep;
   animationTo?: AnimationStep[];
-  easing?: EasingFunction | ((t: number) => number);
+  easing?: (t: number) => number;
   onAnimationComplete?: () => void;
 }
 
-// ✅ Forcer un composant correctement typé qui accepte bien `children`
-type AnimatedSpanProps = React.HTMLAttributes<HTMLSpanElement> & { style?: any };
-const AnimatedSpan = animated.span as unknown as React.FC<AnimatedSpanProps>;
+// Types pour les propriétés animées de react-spring
+interface AnimatedCSSProperties {
+  filter?: string | number | SpringValue<string> | SpringValue<number>;
+  opacity?: number | SpringValue<number>;
+  transform?: string | SpringValue<string>;
+  [key: string]: string | number | SpringValue<string> | SpringValue<number> | undefined;
+}
+
+// Props pour le span animé
+interface AnimatedSpanProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'style'> {
+  style?: AnimatedCSSProperties;
+}
+
+const AnimatedSpan = animated.span as React.FC<AnimatedSpanProps>;
 
 const BlurText: React.FC<BlurTextProps> = ({
   text = '',
@@ -36,13 +47,13 @@ const BlurText: React.FC<BlurTextProps> = ({
   rootMargin = '0px',
   animationFrom,
   animationTo,
-  easing = (t) => t,
+  easing = (t: number) => t,
   onAnimationComplete,
 }) => {
   const elements = animateBy === 'words' ? text.split(' ') : text.split('');
-  const [inView, setInView] = useState(false);
+  const [inView, setInView] = useState<boolean>(false);
   const ref = useRef<HTMLParagraphElement>(null);
-  const completions = useRef(elements.map(() => false));
+  const completions = useRef<boolean[]>(elements.map(() => false));
 
   const defaultFrom: AnimationStep =
     direction === 'top'
@@ -59,31 +70,36 @@ const BlurText: React.FC<BlurTextProps> = ({
   ];
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && ref.current) {
       const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
+        (entries: IntersectionObserverEntry[]) => {
+          const entry = entries[0];
+          if (entry?.isIntersecting) {
             setInView(true);
-            if (ref.current) observer.unobserve(ref.current);
+            if (ref.current) {
+              observer.unobserve(ref.current);
+            }
           }
         },
         { threshold, rootMargin }
       );
-      if (ref.current) observer.observe(ref.current);
+      
+      observer.observe(ref.current);
+      
       return () => observer.disconnect();
     }
   }, [threshold, rootMargin]);
 
   const springs = useSprings(
     elements.length,
-    elements.map((_, i) => ({
+    elements.map((_, i: number) => ({
       from: animationFrom ?? defaultFrom,
       to: inView ? (animationTo ?? defaultTo) : (animationFrom ?? defaultFrom),
       delay: i * delay,
       config: { easing },
       onRest: () => {
         completions.current[i] = true;
-        if (completions.current.every(Boolean) && onAnimationComplete) {
+        if (completions.current.every((completed: boolean) => completed) && onAnimationComplete) {
           onAnimationComplete();
         }
       },
@@ -92,10 +108,10 @@ const BlurText: React.FC<BlurTextProps> = ({
 
   return (
     <p ref={ref} className={`blur-text ${className} inline-flex flex-wrap`}>
-      {springs.map((styleProps, index) => (
+      {springs.map((styleProps, index: number) => (
         <AnimatedSpan
           key={`${elements[index]}-${index}`}
-          style={styleProps as any} // <- typé large via AnimatedSpanProps
+          style={styleProps as AnimatedCSSProperties}
           className="inline-block will-change-[transform,filter,opacity]"
         >
           {elements[index] === ' ' ? '\u00A0' : elements[index]}
