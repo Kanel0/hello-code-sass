@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
 import { animated, useSprings, SpringValue } from '@react-spring/web';
-import { CSSProperties } from 'react';
 
 interface AnimationStep {
   filter: string;
