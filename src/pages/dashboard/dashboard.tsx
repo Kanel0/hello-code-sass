@@ -18,7 +18,7 @@ interface User {
 
 interface DashboardProps {
   children?: React.ReactNode;
-  currentPath?: string;
+  currentPath?: string | null;
 
 }
 

@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import {  useState } from "react";
 
 import Dashboard from "./dashboard";
+import { usePathname } from "next/navigation";
 
-import { useLocation } from "react-router-dom";
 
 
 export default function PaymentMethod() {
-  const location = useLocation();
+  const pathname = usePathname();
   const [selectedMethod, setSelectedMethod] = useState("stripe");
   const [loading] = useState(false);
 
@@ -30,7 +30,7 @@ export default function PaymentMethod() {
   // };
 
   return (
-    <Dashboard currentPath={location.pathname}>
+    <Dashboard currentPath={pathname}>
       <div className="p-6 bg-white rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">Choisir un mode de paiement</h2>
 

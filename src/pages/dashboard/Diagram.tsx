@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import Dashboard from "./dashboard";
-import { useLocation } from "react-router-dom";
+import { usePathname } from "next/navigation";
 
 // Simuler des données des bases de données
 const fetchDatabaseMetrics = async () => {
@@ -25,9 +25,10 @@ function Diagram() {
     getData();
   }, []);
 
-  const location = useLocation();
+  const pathname = usePathname();
+
   return (
-    <Dashboard currentPath={location.pathname} >
+    <Dashboard currentPath={pathname} >
       <div className="p-6  ">
         <h2 className="text-2xl font-semibold text-gray-700 font-[Klapt]">Database Scale</h2>
         <ResponsiveContainer width="100%" height={400}>
