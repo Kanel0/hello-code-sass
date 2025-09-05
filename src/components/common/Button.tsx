@@ -1,6 +1,7 @@
-import { Link, LinkProps } from "react-router-dom";
 import * as React from "react";
 import '../fonts/font.css'
+import Link from "next/link";
+
 // ButtonPrimary component
 interface ButtonPrimaryProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -16,16 +17,16 @@ export const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({ children, classNam
 };
 
 // LinkButton component
-interface LinkButtonProps extends LinkProps {
+interface LinkButtonProps  {
     children: React.ReactNode;
     className?: string;
-
+    href?: string
   }
 
-export const LinkButton: React.FC<LinkButtonProps> = ({ children, className = "",  ...props }) => {
+export const LinkButton: React.FC<LinkButtonProps> = ({ children, className = "", href =""  ,   ...props }) => {
   return (
     <div>
-      <Link  {...props}  className={`bg-gray-800 hover:bg-[#45444c] text-white font-semibold py-2 px-4 rounded ${className}`}>
+      <Link href={href}  {...props}  className={`bg-gray-800 hover:bg-[#45444c] text-white font-semibold py-2 px-4 rounded ${className}`}>
         {children}
       </Link>
     </div>
@@ -33,10 +34,10 @@ export const LinkButton: React.FC<LinkButtonProps> = ({ children, className = ""
 };
 
 
-export const LinkButtonSecondary: React.FC<LinkButtonProps> = ({ children, className = "",  ...props }) => {
+export const LinkButtonSecondary: React.FC<LinkButtonProps> = ({ children, className = "", href="",  ...props }) => {
     return (
       <div>
-        <Link  {...props}  className={` ${className}`}>
+        <Link href={href} {...props}  className={` ${className}`}>
           {children}
         </Link>
       </div>

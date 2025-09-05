@@ -94,14 +94,14 @@ function HomePage() {
 
         <div className="hidden md:flex items-center space-x-4">
           <LinkButtonSecondary
-            to={`/template/login`}
+            href={`/login`}
             className="font-semibold font-[Klapt]"
           >
             Sign in
           </LinkButtonSecondary>
           <LinkButton
             className="flex items-center space-x-2 no-underline"
-            to={"/template/register"}
+            href={"/register"}
           >
             <CiUser className="text-xl no-underline" />
             <span className="font-[Klapt]">Get Started</span>
@@ -143,14 +143,14 @@ function HomePage() {
             Contact
           </a>
           <LinkButtonSecondary
-            to={`/template/login`}
+            href={`/login`}
             className="font-semibold font-[Klapt] w-full text-center"
           >
             Sign in
           </LinkButtonSecondary>
           <LinkButton
             className="flex mt-4 justify-center  w-full"
-            to={"/template/register"}
+            href={"/register"}
           >
             <CiUser className="text-xl" />
             <span className="font-[Klapt]">Get Started</span>
@@ -185,7 +185,7 @@ function HomePage() {
             />
             <LinkButton
               className="flex items-center justify-center py-3 px-6 w-40 space-x-2 no-underline"
-              to={"/template/register"}
+              href={"/register"}
             >
               <span className="font-[Klapt]">Get Started</span>
             </LinkButton>
