@@ -2,12 +2,14 @@
 import Checkbox, { ButtonPrimary } from '@/components/common/Button';
 import React, { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+
 import Logo from '@/assets/Logo.png';
 import Input from '@/components/input/Input';
 import Image from 'next/image';
 import { API } from '@/constant/URL';
 import Modal from '@/components/modals/Modal';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -44,7 +46,7 @@ function Register() {
     setConfirmPasswordError(newConfirmPassword !== password ? 'Les mots de passe ne correspondent pas.' : '');
   };
 
-  const navigate = useNavigate();
+  const navigate = useRouter();
 
   // Add the data to the database
   const handleSubmit = async (e: React.FormEvent) => {
@@ -88,7 +90,7 @@ function Register() {
         setModalMessage("Compte créé avec succès !");
         setIsSuccessModalOpen(true);
         setIsLoading(false);  
-        navigate('/create-database')
+        navigate.push('/login')
         
 
 
@@ -140,7 +142,7 @@ useEffect(() => {
         >
 
           {/* Logo */}
-          <div onClick={()=> navigate('/')} className='flex cursor-pointer justify-center mb-6 bg-gray-800 h-40 rounded shadow-xl'>
+          <div onClick={()=> navigate.push('/')} className='flex cursor-pointer justify-center mb-6 bg-gray-800 h-40 rounded shadow-xl'>
             <Image src={Logo} alt="Loto ERP" className='max-w-[200px] w-full' />
           </div>
 
@@ -222,7 +224,7 @@ useEffect(() => {
           <div>
             <p className='text-center text-gray-500 text-sm'>
               Already have an account? {' '}
-              <Link to='/login' className='text-[#7367f0] hover:underline'>
+              <Link href='/login' className='text-[#7367f0] hover:underline'>
                 Sign In
               </Link>
             </p>

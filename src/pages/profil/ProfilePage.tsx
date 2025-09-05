@@ -1,13 +1,13 @@
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { FaArrowLeft, FaEye, FaEyeSlash } from 'react-icons/fa';
 import Image from 'next/image';
-import { useNavigate } from 'react-router-dom';
 import AvatarDefault from '../../assets/avatar.jpg';
 import Modal from '@/components/modals/Modal';
 import  { JwtPayload as DefaultJwtPayload , jwtDecode} from 'jwt-decode';
 import Input from '@/components/input/Input';
 import { API } from '@/constant/URL';
 import bcrypt from 'bcryptjs';
+import { useRouter } from 'next/navigation';
 
 
 interface User {
@@ -19,7 +19,7 @@ interface User {
   }
 
 const ProfilePage: FC = () => {
-    const navigate = useNavigate();
+    const navigate = useRouter();
 
     const [users, setUsers] = useState<User[]>([]);
     const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -79,7 +79,7 @@ const ProfilePage: FC = () => {
            if (response.ok) {
              localStorage.removeItem('tokenadmin');
              setIsSuccessModalOpen(true);
-             navigate('/login');
+             navigate.push('/login');
            } else {
              setModalMessage('Échec de la déconnexion');
              setIsErrorModalOpen(true);
@@ -348,7 +348,7 @@ const ProfilePage: FC = () => {
 
 
             <button 
-                onClick={() => navigate(-1)} 
+                onClick={() => navigate.push('/dashboard')} 
                 className="absolute top-6 left-6 bg-white p-2 rounded-full shadow-md hover:bg-gray-200 transition"
             >
                 <FaArrowLeft className="text-gray-700 text-xl" />

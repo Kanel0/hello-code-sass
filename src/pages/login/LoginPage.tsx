@@ -2,17 +2,18 @@
 import  { ButtonPrimary } from '@/components/common/Button';
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
 import Logo from '@/assets/Logo.png';
 import Input from '@/components/input/Input';
 import Image from 'next/image';
 import Modal from '@/components/modals/Modal';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const navigate = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   // États pour gérer les modals
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -50,7 +51,7 @@ function LoginPage() {
         // Enregistrer le token JWT dans le localStorage
         localStorage.setItem('tokenadmin', data.token);
         // Rediriger l'utilisateur vers le dashboard
-        navigate('/dashboard');
+        navigate.push('/dashboard');
         setIsLoading(false);
       } else if (response.status === 401) { 
         setIsLoading(false);
@@ -82,7 +83,7 @@ function LoginPage() {
       <div className='flex justify-center bg-gray-100 min-h-screen w-full items-center px-4 py-8'>
         <div className='bg-white p-4 sm:p-8 rounded-lg shadow-2xl w-full max-w-md mx-auto'>
           {/* Logo */}
-          <div onClick={()=> navigate('/')} className='flex cursor-pointer justify-center mb-6 bg-gray-800 rounded shadow-xl'>
+          <div onClick={()=> navigate.push('/')} className='flex cursor-pointer justify-center mb-6 bg-gray-800 rounded shadow-xl'>
             <Image src={Logo} alt="Loto ERP" className='max-w-[200px] w-full' />
           </div>
           <form onSubmit={handleLogin}>
@@ -102,7 +103,7 @@ function LoginPage() {
           <div className='mb-6'>
             <div className='flex flex-wrap justify-between mb-1'>
               <p className='text-gray-500'>Password</p>
-              <Link to="/forgot-password" className='text-[#7367f0] text-sm hover:underline'>
+              <Link href="/forgot-password" className='text-[#7367f0] text-sm hover:underline'>
                 Forgot password?
               </Link> 
             </div>
@@ -173,7 +174,7 @@ function LoginPage() {
           <div>
             <p className='text-center text-gray-500 text-sm'>
               New to our platform? {' '}
-              <Link to='/register' className='text-[#7367f0] hover:underline'>
+              <Link href='/register' className='text-[#7367f0] hover:underline'>
                 Sign Up
               </Link>
             </p>

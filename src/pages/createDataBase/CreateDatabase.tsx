@@ -7,10 +7,12 @@ import Input from '@/components/input/Input';
 import Image from 'next/image';
 import { API } from '@/constant/URL';
 import Modal from '@/components/modals/Modal';
-import { Link, useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
 function CreateDatabase() {
 
-    const navigate = useNavigate();
+    const navigate = useRouter();
     // États pour gérer les modals
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -49,7 +51,7 @@ function CreateDatabase() {
            
             // ✅ Redirection vers /{database}/login
             setTimeout(() => {
-              navigate(`/${database}/login`);
+              navigate.push(`/${database}/login`);
             }, 1500);
     
           } else {
@@ -116,7 +118,7 @@ function CreateDatabase() {
           <div>
             <p className='text-center text-gray-500 text-sm'>
               Return to connected  {' '}
-              <Link to='/login' className='text-[#7367f0] hover:underline'>
+              <Link href='/login' className='text-[#7367f0] hover:underline'>
                 Sign In
               </Link>
             </p>
