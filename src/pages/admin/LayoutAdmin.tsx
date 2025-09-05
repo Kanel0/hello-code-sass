@@ -2,13 +2,13 @@ import React , { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Logo from '@/assets/LogoHello.png';
 import {  FaCog , FaCreditCard , FaInfoCircle } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
 import Avatar from '@/assets/avatar.jpg';
 import  { JwtPayload as DefaultJwtPayload , jwtDecode} from 'jwt-decode';
 import Modal from '@/components/modals/Modal';
 import { BsGraphUpArrow } from "react-icons/bs";
 import { GrContact , GrLicense  } from "react-icons/gr";
 import "../../components/fonts/font.css"
+import { useRouter } from 'next/navigation';
 interface User {
   username: string;
   email: string;
@@ -21,7 +21,7 @@ interface DashboardProps {
 
 }
 function LayoutAdmin({ children , currentPath }: DashboardProps) {
-   const navigate = useNavigate();
+   const navigate = useRouter();
    const [isOpen, setIsOpen] = React.useState(false);
    const menuRef = React.useRef<HTMLDivElement | null>(null);
    const avatarRef = React.useRef<HTMLDivElement | null>(null);
@@ -63,7 +63,7 @@ function LayoutAdmin({ children , currentPath }: DashboardProps) {
        if (response.ok) {
          localStorage.removeItem('tokenadmin');
          setIsSuccessModalOpen(true);
-         navigate('/login');
+         navigate.push('/login');
        } else {
          setModalMessage('Échec de la déconnexion');
          setIsErrorModalOpen(true);
@@ -187,7 +187,7 @@ function LayoutAdmin({ children , currentPath }: DashboardProps) {
           </div>
           <nav className="mt-10">
             {menuItems.map((item, index) => (
-              <div key={index} onClick={() => navigate(item.path)} 
+              <div key={index} onClick={() => navigate.push(item.path)} 
               className={`flex items-center p-3 rounded-lg cursor-pointer font-[Klapt]  ${
                 currentPath === item.path ? 'bg-gray-800 text-white font-bold  shadow-xl' : ''
               }`}
@@ -251,7 +251,7 @@ function LayoutAdmin({ children , currentPath }: DashboardProps) {
                 </div>
         
                 {/* Options du menu */}
-                <div className="py-1 cursor-pointer" onClick={()=>navigate('/profile')}>
+                <div className="py-1 cursor-pointer" onClick={()=>navigate.push('/profile')}>
                   <a  className="block px-4 py-2 text-sm text-gray-700 no-underline hover:bg-gray-100 flex items-center">
                     <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
