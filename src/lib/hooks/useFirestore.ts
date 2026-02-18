@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { 
   collection, 
   addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  doc,
   query,
   where,
   getDocs,
