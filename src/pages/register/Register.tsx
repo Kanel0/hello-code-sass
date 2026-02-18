@@ -92,6 +92,7 @@ function Register() {
     }
   };
 
+  
   // Reset form on success
   useEffect(() => {
     if (!isSuccessModalOpen) {
