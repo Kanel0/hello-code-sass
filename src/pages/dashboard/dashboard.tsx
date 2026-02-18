@@ -10,36 +10,29 @@ import { GrContact, GrLicense } from 'react-icons/gr';
 import '../../components/fonts/font.css';
 import { useRouter } from 'next/navigation';
 
-import { doc, getDoc } from 'firebase/firestore';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { useFirebaseAuth } from '@/lib/hooks/useFirebaseAuth';
-import { db } from '@/lib/firebase/config';
+import { useUserProfile } from '@/lib/hooks/useUserProfile';
 
 interface DashboardProps {
   children?: React.ReactNode;
   currentPath?: string | null;
 }
 
-interface UserProfile {
-  username: string;
-  email: string;
-  profile: string;
-}
-
 function Dashboard({ children, currentPath }: DashboardProps) {
   const navigate = useRouter();
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const menuRef = React.useRef<HTMLDivElement | null>(null);
   const avatarRef = React.useRef<HTMLDivElement | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
-  // 🔥 Firebase hooks
-  const { user, loading } = useAuth();
+  // 🔥 Firebase hooks - UNE SEULE FOIS chacun !
+  const { user, loading: authLoading } = useAuth();
   const { logout } = useFirebaseAuth();
+  const { profile: userProfile, loading: profileLoading } = useUserProfile();
 
   // Fermer le menu au clic extérieur
   useEffect(() => {
@@ -59,41 +52,17 @@ function Dashboard({ children, currentPath }: DashboardProps) {
 
   // Rediriger si non connecté
   useEffect(() => {
-    if (!loading && !user) {
+    if (!authLoading && !user) {
       navigate.push('/login');
     }
-  }, [user, loading, navigate]);
-
-  // 🔥 Récupérer le profil depuis Firestore
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user) return;
-      try {
-        const docRef = doc(db, 'users', user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setUserProfile(docSnap.data() as UserProfile);
-        } else {
-          // Fallback sur les données Firebase Auth
-          setUserProfile({
-            username: user.displayName || 'Utilisateur',
-            email: user.email || 'Client',
-            profile: user.photoURL || '',
-          });
-        }
-      } catch (error) {
-        console.error('Erreur récupération profil:', error);
-      }
-    };
-    fetchProfile();
-  }, [user]);
+  }, [user, authLoading, navigate]);
 
   // 🔥 Déconnexion Firebase
   const handleLogout = useCallback(async () => {
     const result = await logout();
     if (result.success) {
       setIsSuccessModalOpen(true);
-      navigate.push('/login');
+      setTimeout(() => navigate.push('/login'), 1500);
     } else {
       setModalMessage(result.message);
       setIsErrorModalOpen(true);
@@ -109,7 +78,8 @@ function Dashboard({ children, currentPath }: DashboardProps) {
     { icon: FaCog, text: 'Parameter', path: '/parametres' },
   ];
 
-  if (loading) {
+  // Afficher un loader pendant le chargement
+  if (authLoading || profileLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="animate-spin h-10 w-10 rounded-full border-4 border-violet-500 border-t-transparent" />
