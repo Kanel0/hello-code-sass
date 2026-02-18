@@ -32,7 +32,7 @@ export function useFirestore(collectionName: string) {
   };
 
   // Récupérer des documents par champ
-  const getDocumentsByField = async (field: string, value: any) => {
+   const getDocumentsByField = async <T>(field: string, value: T) => {
     setLoading(true);
     try {
       const q = query(collection(db, collectionName), where(field, '==', value));
@@ -40,7 +40,7 @@ export function useFirestore(collectionName: string) {
       const documents = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      }));
+      })) as (DocumentData & { id: string })[];
       setLoading(false);
       return documents;
     } catch (err) {
