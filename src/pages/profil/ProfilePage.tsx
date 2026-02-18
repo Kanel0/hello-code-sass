@@ -5,7 +5,6 @@ import AvatarDefault from '../../assets/avatar.jpg';
 import Modal from '@/components/modals/Modal';
 import  { JwtPayload as DefaultJwtPayload , jwtDecode} from 'jwt-decode';
 import Input from '@/components/input/Input';
-import { API } from '@/constant/URL';
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/navigation';
 
@@ -209,7 +208,7 @@ const ProfilePage: FC = () => {
                     ...(hashedPassword && { password: hashedPassword }) 
                   };
 
-                  const response = await fetch(`${API}/api/update`, {
+                  const response = await fetch(`/api/update`, {
                     method: 'PUT',
                     headers: {
                       'Content-Type': 'application/json',
