@@ -19,6 +19,7 @@ export function useFirebaseAuth() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  
   // ✅ Inscription
   const register = async (
     username: string,
