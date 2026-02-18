@@ -18,8 +18,17 @@ interface AuthResult {
 export function useFirebaseAuth() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(!!auth && !!db);
 
-  
+  // Vérification que Firebase est disponible
+  const checkFirebaseInit = (): boolean => {
+    if (!auth || !db) {
+      console.error('❌ Firebase Auth ou Firestore non initialisé');
+      return false;
+    }
+    return true;
+  };
+
   // ✅ Inscription
   const register = async (
     username: string,
@@ -28,16 +37,26 @@ export function useFirebaseAuth() {
   ): Promise<AuthResult> => {
     setIsLoading(true);
     setError(null);
+
+    // Vérification préalable
+    if (!checkFirebaseInit()) {
+      setIsLoading(false);
+      return { 
+        success: false, 
+        message: 'Service d\'authentification non disponible. Vérifiez votre configuration.' 
+      };
+    }
+
     try {
-      // Créer l'utilisateur dans Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // ✅ auth est maintenant garanti d'exister
+      const userCredential = await createUserWithEmailAndPassword(auth!, email, password);
       const user = userCredential.user;
 
       // Mettre à jour le displayName
       await updateProfile(user, { displayName: username });
 
-      // Enregistrer les infos dans Firestore
-      await setDoc(doc(db, 'users', user.uid), {
+      // ✅ db est maintenant garanti d'exister
+      await setDoc(doc(db!, 'users', user.uid), {
         uid: user.uid,
         username,
         email,
@@ -59,8 +78,17 @@ export function useFirebaseAuth() {
   const login = async (email: string, password: string): Promise<AuthResult> => {
     setIsLoading(true);
     setError(null);
+
+    if (!checkFirebaseInit()) {
+      setIsLoading(false);
+      return { 
+        success: false, 
+        message: 'Service d\'authentification non disponible.' 
+      };
+    }
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth!, email, password);
       setIsLoading(false);
       return { success: true, message: 'Connexion réussie !' };
     } catch (err) {
@@ -74,8 +102,17 @@ export function useFirebaseAuth() {
   // ✅ Déconnexion
   const logout = async (): Promise<AuthResult> => {
     setIsLoading(true);
+
+    if (!checkFirebaseInit()) {
+      setIsLoading(false);
+      return { 
+        success: false, 
+        message: 'Service d\'authentification non disponible.' 
+      };
+    }
+
     try {
-      await signOut(auth);
+      await signOut(auth!);
       localStorage.removeItem('tokenadmin');
       setIsLoading(false);
       return { success: true, message: 'Déconnexion réussie !' };
@@ -91,8 +128,17 @@ export function useFirebaseAuth() {
   const resetPassword = async (email: string): Promise<AuthResult> => {
     setIsLoading(true);
     setError(null);
+
+    if (!checkFirebaseInit()) {
+      setIsLoading(false);
+      return { 
+        success: false, 
+        message: 'Service d\'authentification non disponible.' 
+      };
+    }
+
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth!, email);
       setIsLoading(false);
       return {
         success: true,
@@ -106,10 +152,18 @@ export function useFirebaseAuth() {
     }
   };
 
-  return { register, login, logout, resetPassword, isLoading, error };
+  return { 
+    register, 
+    login, 
+    logout, 
+    resetPassword, 
+    isLoading, 
+    error,
+    isInitialized 
+  };
 }
 
-// 🔴 Traduction des erreurs Firebase
+// 🔴 Traduction des erreurs Firebase (inchangée)
 function getFirebaseErrorMessage(error: AuthError): string {
   switch (error.code) {
     case 'auth/email-already-in-use':
