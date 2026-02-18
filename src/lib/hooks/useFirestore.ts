@@ -26,6 +26,8 @@ export function useFirestore(collectionName: string) {
     return db;
   };
 
+
+  
   // Ajouter un document
   const addDocument = async (data: DocumentData) => {
     setLoading(true);
