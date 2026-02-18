@@ -18,7 +18,7 @@ interface AuthResult {
 export function useFirebaseAuth() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isInitialized, setIsInitialized] = useState(!!auth && !!db);
+  const [isInitialized] = useState(!!auth && !!db);
 
   // Vérification que Firebase est disponible
   const checkFirebaseInit = (): boolean => {

@@ -13,7 +13,7 @@ import { db } from '../firebase/config';
 export function useFirestore(collectionName: string) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isInitialized, setIsInitialized] = useState(!!db);
+  const [isInitialized] = useState(!!db);
 
   // Vérification que Firestore est disponible
   const checkFirestoreInit = (): Firestore | null => {
