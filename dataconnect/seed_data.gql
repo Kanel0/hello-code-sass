@@ -1,0 +1,97 @@
+mutation CreateDemoData @transaction @auth(level: USER, insecureReason: "This mutation creates sample data and is safe to expose to all logged in users.") {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      username: "john.doe",
+      email: "john.doe@example.com",
+      firstName: "John",
+      lastName: "Doe",
+      role: "customer",
+      createdAt: "2023-01-01T10:00:00Z"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      username: "jane.smith",
+      email: "jane.smith@example.com",
+      firstName: "Jane",
+      lastName: "Smith",
+      role: "admin",
+      createdAt: "2023-01-02T11:00:00Z"
+    }
+  ])
+  customer_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440002",
+      name: "John Doe",
+      email: "john.doe@example.com",
+      address: "123 Main St",
+      company: "Acme Corp",
+      phone: "555-1234",
+      createdAt: "2023-01-01T10:00:00Z"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440003",
+      name: "Jane Smith",
+      email: "jane.smith@example.com",
+      address: "456 Oak Ave",
+      company: "Globex Inc",
+      phone: "555-5678",
+      createdAt: "2023-01-02T11:00:00Z"
+    }
+  ])
+  product_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440004",
+      name: "Laptop Pro",
+      description: "Powerful laptop for professionals",
+      price: 1200.00,
+      sku: "LAPTOP-PRO-001",
+      stockQuantity: 50,
+      category: "Electronics",
+      createdAt: "2023-01-05T09:00:00Z"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440005",
+      name: "Ergonomic Mouse",
+      description: "Comfortable mouse for long use",
+      price: 25.00,
+      sku: "MOUSE-ERG-002",
+      stockQuantity: 200,
+      category: "Accessories",
+      createdAt: "2023-01-06T10:00:00Z"
+    }
+  ])
+  order_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440006",
+      customerId: "550e8400-e29b-41d4-a716-446655440002",
+      orderNumber: "ORD-2023-0001",
+      orderDate: "2023-01-10",
+      totalAmount: 1225.00,
+      status: "pending",
+      shippingAddress: "123 Main St",
+      notes: "Customer requested expedited shipping.",
+      createdAt: "2023-01-10T12:00:00Z"
+    }
+  ])
+  orderItem_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440007",
+      orderId: "550e8400-e29b-41d4-a716-446655440006",
+      productId: "550e8400-e29b-41d4-a716-446655440004",
+      quantity: 1,
+      unitPrice: 1200.00,
+      discount: 0.00,
+      createdAt: "2023-01-10T12:01:00Z"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440008",
+      orderId: "550e8400-e29b-41d4-a716-446655440006",
+      productId: "550e8400-e29b-41d4-a716-446655440005",
+      quantity: 1,
+      unitPrice: 25.00,
+      discount: 0.00,
+      createdAt: "2023-01-10T12:02:00Z"
+    }
+  ])
+}
